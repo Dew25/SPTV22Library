@@ -23,7 +23,7 @@ public class BookManager {
     public Book addBook(){
         System.out.println("----- Add book -----");
         Book book = new Book();
-        System.out.print("Enter title:");
+        System.out.print("Enter title: ");
         book.setTitle(scanner.nextLine());
         System.out.print("Enter published year: ");
         book.setPublishedYear(scanner.nextInt());scanner.nextLine();
@@ -38,5 +38,15 @@ public class BookManager {
         }
         System.out.println("Added book: "+book.toString());
         return book;
+    }
+
+    public void printListBooks(Book[] books) {
+        System.out.println("----- List books -----");
+        for (int i = 0; i < books.length; i++) {
+            System.out.printf("%d. %s%n",
+                    i+1,
+                    books[i].getTitle()
+            );
+        }
     }
 }
