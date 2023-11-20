@@ -8,6 +8,7 @@ package managers;
 import entity.Author;
 import entity.Book;
 import java.util.Scanner;
+import tools.InputProtection;
 
 /**
  *
@@ -26,9 +27,9 @@ public class BookManager {
         System.out.print("Enter title: ");
         book.setTitle(scanner.nextLine());
         System.out.print("Enter published year: ");
-        book.setPublishedYear(scanner.nextInt());scanner.nextLine();
+        book.setPublishedYear(InputProtection.intInput(1000,2030));
         System.out.println("Hoy many authors in book: ");
-        int countAuthors = scanner.nextInt(); scanner.nextLine();
+        int countAuthors = InputProtection.intInput(1,5);//scanner.nextInt(); scanner.nextLine();
         for (int i = 0; i < countAuthors; i++) {
             System.out.printf("Enter author (%d) firstname: ", i+1);
             String authorFirstname = scanner.nextLine();

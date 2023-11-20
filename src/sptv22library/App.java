@@ -13,6 +13,7 @@ import entity.Reader;
 import java.util.Arrays;
 import java.util.Scanner;
 import managers.BookManager;
+import tools.InputProtection;
 
 /**
  *
@@ -51,9 +52,10 @@ public class App {
             System.out.println("4. Print list readers");
             System.out.println("5. Take out book");
             System.out.println("6. Print list reading books");
+            System.out.println("7. Return book");
             
             System.out.print("Enter task number: ");
-            int task = scanner.nextInt(); scanner.nextLine();
+            int task = InputProtection.intInput(0,7); 
             switch (task) {
                 case 0:
                     repeat = false;
@@ -78,6 +80,9 @@ public class App {
                     break;
                 case 6:
                     historyManager.printListReadingBooks(histories);
+                    break;
+                case 7:
+                    historyManager.returnBook(histories);
                     break;
                 default:
                     System.out.println("Select from list tasks!");

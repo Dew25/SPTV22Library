@@ -10,6 +10,7 @@ import entity.History;
 import entity.Reader;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
+import tools.InputProtection;
 
 /**
  *
@@ -46,11 +47,11 @@ public class HistoryManager {
         History history = new History();
         bookManager.printListBooks(books);
         System.out.print("Enter number book from list: ");
-        int numberBook = scanner.nextInt(); scanner.nextLine();
+        int numberBook = InputProtection.intInput(1, books.length); //scanner.nextInt(); scanner.nextLine();
         history.setBook(books[numberBook - 1]);
         readerManager.printListReaders(readers);
         System.out.print("Enter number reader from list: ");
-        int numberReader = scanner.nextInt(); scanner.nextLine();
+        int numberReader = InputProtection.intInput(1, readers.length);//scanner.nextInt(); scanner.nextLine();
         history.setReader(readers[numberReader-1]);
         history.setTakeOutBook(new GregorianCalendar().getTime());
         
@@ -69,6 +70,14 @@ public class HistoryManager {
                 );
             }
         }
+    }
+
+    public void returnBook(History[] histories) {
+        System.out.println("Return book:");
+        this.printListReadingBooks(histories);
+        System.out.println("Enter number book: ");
+        int numberReturnBook = InputProtection.intInput(1, histories.length);
+        histories[numberReturnBook - 1].setReturnBook(new GregorianCalendar().getTime());
     }
     
 }
