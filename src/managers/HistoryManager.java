@@ -62,7 +62,7 @@ public class HistoryManager {
         System.out.println("----- List reading books -----");
         for (int i = 0; i < histories.length; i++) {
             if(histories[i].getReturnBook() == null){
-                System.out.printf("%d. %s. read %s %s",
+                System.out.printf("%d. %s. read %s %s%n",
                         i+1,
                         histories[i].getBook().getTitle(),
                         histories[i].getReader().getFirstname(),
