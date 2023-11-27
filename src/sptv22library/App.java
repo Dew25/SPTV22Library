@@ -11,7 +11,7 @@ import managers.ReaderManager;
 import entity.Book;
 import entity.History;
 import entity.Reader;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import managers.BookManager;
 import tools.InputProtection;
@@ -22,9 +22,9 @@ import tools.InputProtection;
  */
 public class App {
     private final Scanner scanner; 
-    private Book[] books;
-    private Reader[] readers;
-    private History[] histories;
+    private List<Book> books;
+    private List<Reader> readers;
+    private List<History> histories;
     private final BookManager bookManager;
     private final ReaderManager readerManager;
     private final HistoryManager historyManager;
@@ -56,32 +56,30 @@ public class App {
             System.out.println("5. Take out book");
             System.out.println("6. Print list reading books");
             System.out.println("7. Return book");
+            System.out.println("8. Book rating");
             
             System.out.print("Enter task number: ");
-            int task = InputProtection.intInput(0,7); 
+            int task = InputProtection.intInput(0,8); 
             switch (task) {
                 case 0:
                     repeat = false;
                     break;
                 case 1:
-                    this.books = Arrays.copyOf(this.books, this.books.length+1);
-                    this.books[this.books.length - 1] = bookManager.addBook();
+                    this.books.add(bookManager.addBook());
                     saveManager.saveBooks(this.books);
                     break;
                 case 2:
                     bookManager.printListBooks(books);
                     break;
                 case 3:
-                    this.readers = Arrays.copyOf(this.readers, this.readers.length+1);
-                    this.readers[this.readers.length - 1] = readerManager.addReader(readers);
+                    this.readers.add(readerManager.addReader());
                     saveManager.saveReaders(readers);
                     break;
                 case 4:
                     readerManager.printListReaders(readers);
                     break;
                 case 5:
-                    this.histories = Arrays.copyOf(this.histories, this.histories.length+1);
-                    this.histories[this.histories.length - 1] = historyManager.takeOutBook(books, readers);
+                    this.histories.add(historyManager.takeOutBook(books, readers));
                     saveManager.saveHistories(histories);
                     break;
                 case 6:
@@ -90,6 +88,9 @@ public class App {
                 case 7:
                     historyManager.returnBook(histories);
                     saveManager.saveHistories(histories);
+                    break;
+                case 8:
+                    historyManager.bookRating(this.histories);
                     break;
                 default:
                     System.out.println("Select from list tasks!");
