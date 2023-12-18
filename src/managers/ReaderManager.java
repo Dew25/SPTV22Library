@@ -6,6 +6,7 @@
 package managers;
 
 import entity.Reader;
+import entity.User;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,7 +21,8 @@ public class ReaderManager {
         this.scanner = scanner;
     }
     
-    public Reader addReader() {
+    public User addReader() {
+        
         Reader reader = new Reader();
         System.out.println("----- Add reader -----");
         System.out.print("Firstname: ");
@@ -29,18 +31,25 @@ public class ReaderManager {
         reader.setLastname(scanner.nextLine());
         System.out.print("Phone: ");
         reader.setPhone(scanner.nextLine());
+        User user = new User();
+        System.out.print("Login: ");
+        user.setLogin(scanner.nextLine());
+        System.out.print("Password: ");
+        user.setPassword(scanner.nextLine());
+        user.setReader(reader);
         System.out.println("New reader added!");
-        return reader;
+        return user;
     }
 
-    public void printListReaders(List<Reader> readers) {
+    public void printListUserss(List<User> users) {
         System.out.println("----- List readers -----");
-        for (int i = 0; i < readers.size(); i++) {
-            System.out.printf("%d. %s %s. (%s)%n",
+        for (int i = 0; i < users.size(); i++) {
+            System.out.printf("%d. %s %s. Login: %s (phone: %s)%n",
                     i+1,
-                    readers.get(i).getFirstname(),
-                    readers.get(i).getLastname(),
-                    readers.get(i).getPhone()
+                    users.get(i).getReader().getFirstname(),
+                    users.get(i).getReader().getLastname(),
+                    users.get(i).getLogin(),
+                    users.get(i).getReader().getPhone()
             );
         }
     }

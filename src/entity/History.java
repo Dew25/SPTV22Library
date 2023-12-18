@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class History implements Serializable{
     private Book book;
-    private Reader reader;
+    private User user;
     private Date takeOutBook;
     private Date returnBook;
 
@@ -31,12 +31,12 @@ public class History implements Serializable{
         this.book = book;
     }
 
-    public Reader getReader() {
-        return reader;
+    public User getUser() {
+        return user;
     }
 
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Date getTakeOutBook() {
@@ -59,7 +59,7 @@ public class History implements Serializable{
     public int hashCode() {
         int hash = 7;
         hash = 83 * hash + Objects.hashCode(this.book);
-        hash = 83 * hash + Objects.hashCode(this.reader);
+        hash = 83 * hash + Objects.hashCode(this.user);
         hash = 83 * hash + Objects.hashCode(this.takeOutBook);
         hash = 83 * hash + Objects.hashCode(this.returnBook);
         return hash;
@@ -80,7 +80,7 @@ public class History implements Serializable{
         if (!Objects.equals(this.book, other.book)) {
             return false;
         }
-        if (!Objects.equals(this.reader, other.reader)) {
+        if (!Objects.equals(this.user, other.user)) {
             return false;
         }
         if (!Objects.equals(this.takeOutBook, other.takeOutBook)) {
@@ -97,8 +97,9 @@ public class History implements Serializable{
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.YYYY");
         return "History{" 
                 + "book=" + book.getTitle()
-                + ", reader=" + reader.getFirstname()
-                + " " + reader.getLastname()
+                + ", user=" + user.getReader().getFirstname()
+                + " " + user.getReader().getLastname()
+                + " login="+user.getLogin()
                 + ", takeOutBook=" + sdf.format(takeOutBook) 
                 + ", returnBook=" + sdf.format(returnBook)
                 + '}';

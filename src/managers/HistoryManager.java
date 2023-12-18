@@ -8,6 +8,7 @@ package managers;
 import entity.Book;
 import entity.History;
 import entity.Reader;
+import entity.User;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import sptv22library.App;
 import tools.InputProtection;
 
 /**
@@ -49,19 +51,21 @@ public class HistoryManager {
      * @param readers
      * @return History history
      */
-    public History takeOutBook(List<Book> books, List<Reader> readers) {
+    public History takeOutBook(List<Book> books) {
         History history = new History();
         bookManager.printListBooks(books);
         System.out.print("Enter number book from list: ");
         int numberBook = InputProtection.intInput(1, books.size()); //scanner.nextInt(); scanner.nextLine();
-        history.setBook(books.get(numberBook - 1));
-        readerManager.printListReaders(readers);
-        System.out.print("Enter number reader from list: ");
-        int numberReader = InputProtection.intInput(1, readers.size());//scanner.nextInt(); scanner.nextLine();
-        history.setReader(readers.get(numberReader-1));
-        history.setTakeOutBook(new GregorianCalendar().getTime());
-        
-        return history;
+        if(books.get(numberBook - 1).getCount() > 0){
+            books.get(numberBook - 1).setCount(books.get(numberBook - 1).getCount() - 1);
+            history.setBook(books.get(numberBook - 1));
+            history.setUser(App.user);
+            history.setTakeOutBook(new GregorianCalendar().getTime());
+            return history;
+        }else{
+            System.out.println("All books are taken");
+            return null;
+        }
     }
 
     public void printListReadingBooks(List<History> histories) {
@@ -71,8 +75,8 @@ public class HistoryManager {
                 System.out.printf("%d. %s. read %s %s%n",
                         i+1,
                         histories.get(i).getBook().getTitle(),
-                        histories.get(i).getReader().getFirstname(),
-                        histories.get(i).getReader().getLastname()
+                        histories.get(i).getUser().getReader().getFirstname(),
+                        histories.get(i).getUser().getReader().getLastname()
                 );
             }
         }
@@ -83,7 +87,14 @@ public class HistoryManager {
         this.printListReadingBooks(histories);
         System.out.println("Enter number book: ");
         int numberReturnBook = InputProtection.intInput(1, histories.size());
-        histories.get(numberReturnBook - 1).setReturnBook(new GregorianCalendar().getTime());
+        if(histories.get(numberReturnBook - 1).getBook().getCount() 
+                < histories.get(numberReturnBook - 1).getBook().getQuantity()){
+            histories.get(numberReturnBook - 1).getBook().setCount(histories.get(numberReturnBook - 1).getBook().getCount() + 1);
+            histories.get(numberReturnBook - 1).setReturnBook(new GregorianCalendar().getTime());
+            
+        }else{
+            System.out.println("All copies already in stock");
+        }
     }
 
     public void bookRating(List<History> histories) {
@@ -111,6 +122,7 @@ public class HistoryManager {
                     entry.getKey().getTitle(),
                     entry.getValue()
             );
+            n++;
         }
     }
     
