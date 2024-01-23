@@ -10,14 +10,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
  * @author admin
  */
+@Entity
 public class Book implements Serializable{
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private int publishedYear;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany
     private List<Author> authors;
     private int quantity;
     private int count;
@@ -108,6 +120,14 @@ public class Book implements Serializable{
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
     
     

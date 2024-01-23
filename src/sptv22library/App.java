@@ -14,6 +14,7 @@ import entity.User;
 import java.util.List;
 import java.util.Scanner;
 import managers.BookManager;
+import managers.DatabaseManager;
 import tools.InputProtection;
 
 /**
@@ -23,21 +24,22 @@ import tools.InputProtection;
 public class App {
     public static User user;
     private final Scanner scanner; 
-    private List<Book> books;
-    private List<User> users;
+    //private List<Book> books;
+    //private List<User> users;
     private List<History> histories;
     
     private final BookManager bookManager;
     private final ReaderManager readerManager;
     private final HistoryManager historyManager;
-    private final SaveManager saveManager;
-    
+    //private final SaveManager saveManager;
+    private final DatabaseManager databaseManager;
 
     public App() {
         this.scanner = new Scanner(System.in);
-        this.saveManager = new SaveManager();
-        this.books = saveManager.loadBooks();
-        this.users = saveManager.loadUsers();
+//        this.saveManager = new SaveManager();
+        this.databaseManager = new DatabaseManager();
+       // this.books = saveManager.loadBooks();
+        //this.users = saveManager.loadUsers();
         this.histories = saveManager.loadHistories();
         this.bookManager = new BookManager(scanner);
         this.readerManager = new ReaderManager(scanner);
@@ -50,19 +52,14 @@ public class App {
         System.out.println("If you have a login and password press y, otherwise press n");
         String word = scanner.nextLine();
         if("n".equals(word)){
-            this.users.add(readerManager.addReader());
-            saveManager.saveReaders(users);
+            databaseManager.saveUser(readerManager.addReader());
         }
         for(int n=0;n<3;n++){
             System.out.print("Please enter your login: ");
             String login = scanner.nextLine();
             System.out.print("Please enter your password: ");
             String password = scanner.nextLine();
-            for (int i = 0; i < users.size(); i++) {
-                if(users.get(i).getLogin().equals(login) && users.get(i).getPassword().equals(password)){
-                   App.user = users.get(i);
-                }
-            }
+            App.user = databaseManager.authorization(login, password);
             if(App.user != null){
                 break;
             }
@@ -93,18 +90,16 @@ public class App {
                     repeat = false;
                     break;
                 case 1:
-                    this.books.add(bookManager.addBook());
-                    saveManager.saveBooks(this.books);
+                    databaseManager.saveBook(bookManager.addBook());
                     break;
                 case 2:
-                    bookManager.printListBooks(books);
+                    bookManager.printListBooks(databaseManager);
                     break;
                 case 3:
-                    this.users.add(readerManager.addReader());
-                    saveManager.saveReaders(users);
+                    databaseManager.saveUser(readerManager.addReader());
                     break;
                 case 4:
-                    readerManager.printListUserss(users);
+                    readerManager.printListUserss(databaseManager);
                     break;
                 case 5:
                     History history = historyManager.takeOutBook(books);

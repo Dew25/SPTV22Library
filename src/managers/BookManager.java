@@ -45,8 +45,9 @@ public class BookManager {
         return book;
     }
 
-    public void printListBooks(List<Book> books) {
+    public void printListBooks(DatabaseManager databaseManager) {
         System.out.println("----- List books -----");
+        List<Book> books = databaseManager.getListBooks();
         for (int i = 0; i < books.size(); i++) {
             StringBuilder sbAuthorsBook = new StringBuilder();
             for (int j = 0; j < books.get(i).getAuthors().size(); j++) {

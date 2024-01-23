@@ -41,8 +41,9 @@ public class ReaderManager {
         return user;
     }
 
-    public void printListUserss(List<User> users) {
+    public void printListUserss(DatabaseManager databaseManager) {
         System.out.println("----- List readers -----");
+        List<User> users = databaseManager.getListUsers();
         for (int i = 0; i < users.size(); i++) {
             System.out.printf("%d. %s %s. Login: %s (phone: %s)%n",
                     i+1,
