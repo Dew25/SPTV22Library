@@ -7,7 +7,6 @@ package managers;
 
 import entity.Book;
 import entity.History;
-import entity.Reader;
 import entity.User;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
