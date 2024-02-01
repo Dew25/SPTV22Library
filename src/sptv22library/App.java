@@ -5,10 +5,8 @@
  */
 package sptv22library;
 
-import managers.SaveManager;
 import managers.HistoryManager;
 import managers.ReaderManager;
-import entity.Book;
 import entity.History;
 import entity.User;
 import java.util.List;
@@ -26,7 +24,7 @@ public class App {
     private final Scanner scanner; 
     //private List<Book> books;
     //private List<User> users;
-    private List<History> histories;
+    //private List<History> histories;
     
     private final BookManager bookManager;
     private final ReaderManager readerManager;
@@ -40,7 +38,7 @@ public class App {
         this.databaseManager = new DatabaseManager();
        // this.books = saveManager.loadBooks();
         //this.users = saveManager.loadUsers();
-        this.histories = saveManager.loadHistories();
+        //this.histories = saveManager.loadHistories();
         this.bookManager = new BookManager(scanner);
         this.readerManager = new ReaderManager(scanner);
         this.historyManager = new HistoryManager(scanner,readerManager,bookManager);
@@ -90,7 +88,7 @@ public class App {
                     repeat = false;
                     break;
                 case 1:
-                    databaseManager.saveBook(bookManager.addBook());
+                    bookManager.addBook(databaseManager);
                     break;
                 case 2:
                     bookManager.printListBooks(databaseManager);
@@ -102,21 +100,16 @@ public class App {
                     readerManager.printListUserss(databaseManager);
                     break;
                 case 5:
-                    History history = historyManager.takeOutBook(books);
-                    if(history != null){
-                        this.histories.add(history);
-                        saveManager.saveHistories(histories);
-                    }
+                    historyManager.takeOutBook(databaseManager);
                     break;
                 case 6:
-                    historyManager.printListReadingBooks(histories);
+                    historyManager.printListReadingBooks(databaseManager);
                     break;
                 case 7:
-                    historyManager.returnBook(histories);
-                    saveManager.saveHistories(histories);
+                    historyManager.returnBook(databaseManager);
                     break;
                 case 8:
-                    historyManager.bookRating(this.histories);
+                    historyManager.bookRating(databaseManager);
                     break;
                 default:
                     System.out.println("Select from list tasks!");

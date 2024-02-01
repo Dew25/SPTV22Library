@@ -41,63 +41,66 @@ public class HistoryManager {
     /**
      * Логика работы метода
      * 1. список книг
-     * 2. пользователь вводит номер книги
-     * 3. записываем в историю выбранную книгу из массива книг
+     * 2. пользователь вводит номер книги (id)
+     * 3. получаем из базы книгу по id и записываем ее в историю
      * 4. список читателей
-     * 5. пользователь вводит номер читателя
-     * 6. записываем в историю выбранного читателя из массива читателей
+     * 5. пользователь вводит номер читателя (id)
+     * 6. получаем из базы пользователя по id и записываем его в историю
      * 7. записываем в историю дату выдачи книги
-     * @param books
-     * @param readers
-     * @return History history
+     * 8. сохраняем полученную историю в базу
+     * @param databaseManager
+     * 
      */
-    public History takeOutBook(List<Book> books) {
+    public void takeOutBook(DatabaseManager databaseManager) {
         History history = new History();
-        bookManager.printListBooks(books);
+        int numBooks = bookManager.printListBooks(databaseManager);
         System.out.print("Enter number book from list: ");
-        int numberBook = InputProtection.intInput(1, books.size()); //scanner.nextInt(); scanner.nextLine();
-        if(books.get(numberBook - 1).getCount() > 0){
-            books.get(numberBook - 1).setCount(books.get(numberBook - 1).getCount() - 1);
-            history.setBook(books.get(numberBook - 1));
-            history.setUser(App.user);
+        int numberBook = InputProtection.intInput(1, numBooks); 
+        Book book = databaseManager.getBook((long)numberBook);//Ставим book под управление em
+        if(book.getCount() > 0){
+            book.setCount(book.getCount() - 1);
+            databaseManager.saveBook(book); //Сохраняем изменненную книгу в базу
+            history.setBook(book);
+            history.setUser(databaseManager.getUser(App.user.getId()));//Ставим App.user под управление em
             history.setTakeOutBook(new GregorianCalendar().getTime());
-            return history;
+            databaseManager.saveHistory(history);
         }else{
             System.out.println("All books are taken");
-            return null;
         }
     }
 
-    public void printListReadingBooks(List<History> histories) {
+    public int printListReadingBooks(DatabaseManager databaseManager) {
         System.out.println("----- List reading books -----");
+        List<History> histories = databaseManager.getReadingBooks();
         for (int i = 0; i < histories.size(); i++) {
-            if(histories.get(i).getReturnBook() == null){
-                System.out.printf("%d. %s. read %s %s%n",
-                        i+1,
-                        histories.get(i).getBook().getTitle(),
-                        histories.get(i).getUser().getReader().getFirstname(),
-                        histories.get(i).getUser().getReader().getLastname()
-                );
-            }
+            System.out.printf("%d. %s. read %s %s%n",
+                    histories.get(i).getId(),
+                    histories.get(i).getBook().getTitle(),
+                    histories.get(i).getUser().getReader().getFirstname(),
+                    histories.get(i).getUser().getReader().getLastname()
+            );
         }
+        return histories.size();
     }
 
-    public void returnBook(List<History> histories) {
+    public void returnBook(DatabaseManager databaseManager) {
         System.out.println("Return book:");
-        this.printListReadingBooks(histories);
+        int numHistories = this.printListReadingBooks(databaseManager);
         System.out.println("Enter number book: ");
-        int numberReturnBook = InputProtection.intInput(1, histories.size());
-        if(histories.get(numberReturnBook - 1).getBook().getCount() 
-                < histories.get(numberReturnBook - 1).getBook().getQuantity()){
-            histories.get(numberReturnBook - 1).getBook().setCount(histories.get(numberReturnBook - 1).getBook().getCount() + 1);
-            histories.get(numberReturnBook - 1).setReturnBook(new GregorianCalendar().getTime());
-            
+        int idReturnBookHistory = InputProtection.intInput(1, numHistories);
+        History history = databaseManager.getHistory((long)idReturnBookHistory);
+        if(history.getBook().getCount() 
+                < history.getBook().getQuantity()){
+            history.getBook().setCount(history.getBook().getCount() + 1);
+            history.setReturnBook(new GregorianCalendar().getTime());
+            databaseManager.saveHistory(history);
         }else{
             System.out.println("All copies already in stock");
         }
     }
 
-    public void bookRating(List<History> histories) {
+    public void bookRating(DatabaseManager databaseManager) {
+        List<History> histories = databaseManager.getListHistories();
         Map<Book,Integer> mapRatingBook = new HashMap<>();
         for (int i = 0; i < histories.size(); i++) {
             if(mapRatingBook.containsKey(histories.get(i).getBook())){

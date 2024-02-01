@@ -5,7 +5,9 @@
  */
 package managers;
 
+import entity.Author;
 import entity.Book;
+import entity.History;
 import entity.User;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -26,13 +28,6 @@ public class DatabaseManager {
     public void saveBook(Book book){
         try {
             em.getTransaction().begin();
-            for (int i = 0; i < book.getAuthors().size(); i++) {
-                if(book.getAuthors().get(i).getId() == null){
-                    em.persist(book.getAuthors().get(i));
-                }else{
-                    em.merge(book.getAuthors().get(i));
-                }
-            }
             if(book.getId() == null){
                 em.persist(book);
             }else{
@@ -70,12 +65,79 @@ public class DatabaseManager {
     List<User> getListUsers() {
         return em.createQuery("SELECT user FROM User user").getResultList();
     }
+    public List<History> getReadingBooks(){
+        return  em.createQuery("SELECT history FROM History history WHERE history.returnBook=null")
+                .getResultList();
+    }
 
     public User authorization(String login, String password) {
-        return (User) em.createQuery("SELECT user FROM User user WHERE user.login = :login AND user.password = :password")
-                .setParameter("login", login)
-                .setParameter("password", login)
-                .getSingleResult();
+        try {
+            return (User) em.createQuery("SELECT user FROM User user WHERE user.login = :login AND user.password = :password")
+                    .setParameter("login", login)
+                    .setParameter("password", password)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Book getBook(Long id) {
+        try {
+            return em.find(Book.class, id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    public User getUser(Long id) {
+        try {
+            return em.find(User.class,id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void saveHistory(History history) {
+        em.getTransaction().begin();
+        if(history.getId() == null){
+            em.persist(history);
+        }else{
+            em.merge(history);
+        }
+        em.getTransaction().commit();
+    }
+
+    History getHistory(Long id) {
+        try {
+            return em.find(History.class,id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    List<History> getListHistories() {
+        return em.createQuery("SELECT h FROM History h")
+                .getResultList();
+    }
+
+    void saveAuthor(Author author) {
+        try {
+            em.getTransaction().begin();
+            em.persist(author);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        }
+    }
+
+    Author getAuthor(String firstname, String lastname) {
+        try {
+            return (Author) em.createQuery("SELECT a FROM Author a WHERE a.fistname = :firstname AND a.lastname = :lastname")
+                    .setParameter(firstname, firstname)
+                    .setParameter("lastname", lastname)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }

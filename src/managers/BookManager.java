@@ -22,7 +22,7 @@ public class BookManager {
     public BookManager(Scanner scanner) {
         this.scanner = scanner;
     }
-    public Book addBook(){
+    public void addBook(DatabaseManager databaseManager){
         System.out.println("----- Add book -----");
         Book book = new Book();
         System.out.print("Enter title: ");
@@ -36,16 +36,22 @@ public class BookManager {
             String authorFirstname = scanner.nextLine();
             System.out.printf("Enter author (%d) lastname: ",i+1);
             String authorLastname = scanner.nextLine();
-            book.getAuthors().add(new Author(authorFirstname, authorLastname));
+            Author author = databaseManager.getAuthor(authorFirstname, authorLastname);
+            if(author == null){
+                author = new Author(authorFirstname,authorLastname);
+                databaseManager.saveAuthor(author);
+            }
+            book.getAuthors().add(author);
         }
         System.out.print("Enter quantity copy: ");
         book.setQuantity(InputProtection.intInput(1,10));
         book.setCount(book.getQuantity());
+        databaseManager.saveBook(book);
         System.out.println("Added book: "+book.toString());
-        return book;
     }
 
-    public void printListBooks(DatabaseManager databaseManager) {
+    public int printListBooks(DatabaseManager databaseManager) {
+        int n = 0;
         System.out.println("----- List books -----");
         List<Book> books = databaseManager.getListBooks();
         for (int i = 0; i < books.size(); i++) {
@@ -57,11 +63,13 @@ public class BookManager {
                 sbAuthorsBook.append(". ");
             }
             System.out.printf("%d. %s. %s In store: %d%n",
-                    i+1,
+                    books.get(i).getId(),
                     books.get(i).getTitle(),
                     sbAuthorsBook.toString(),
                     books.get(i).getCount()
             );
+            n++;
         }
+        return n;
     }
 }
