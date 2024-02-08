@@ -13,7 +13,8 @@ import java.util.Scanner;
  */
 public class InputProtection {
     
-    public static int intInput(int beginRange, int endRange){
+    public static int intInput(Integer beginRange, Integer endRange){
+        
         Scanner scanner = new Scanner(System.in);
         int number = -1;
         do{
@@ -25,7 +26,14 @@ public class InputProtection {
                 System.out.print("Please enter a number: ");
                 continue;
             }
-            if(number >= beginRange && number <= endRange){
+            if(endRange == null){
+                if(number >= beginRange){
+                    return number;
+                }else{
+                    System.out.printf("Please enter a number > %d): ",beginRange);
+                    continue;
+                }
+            }else if(number >= beginRange && number <= endRange){
                 return number;
             }else{
                 System.out.printf("Please enter a number (%d .. %d): ",beginRange, endRange);

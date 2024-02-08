@@ -53,9 +53,9 @@ public class HistoryManager {
      */
     public void takeOutBook(DatabaseManager databaseManager) {
         History history = new History();
-        int numBooks = bookManager.printListBooks(databaseManager);
+        bookManager.printListBooks(databaseManager);
         System.out.print("Enter number book from list: ");
-        int numberBook = InputProtection.intInput(1, numBooks); 
+        int numberBook = InputProtection.intInput(1,null); 
         Book book = databaseManager.getBook((long)numberBook);//Ставим book под управление em
         if(book.getCount() > 0){
             book.setCount(book.getCount() - 1);
@@ -85,9 +85,9 @@ public class HistoryManager {
 
     public void returnBook(DatabaseManager databaseManager) {
         System.out.println("Return book:");
-        int numHistories = this.printListReadingBooks(databaseManager);
+        this.printListReadingBooks(databaseManager);
         System.out.println("Enter number book: ");
-        int idReturnBookHistory = InputProtection.intInput(1, numHistories);
+        int idReturnBookHistory = InputProtection.intInput(1, null);
         History history = databaseManager.getHistory((long)idReturnBookHistory);
         if(history.getBook().getCount() 
                 < history.getBook().getQuantity()){

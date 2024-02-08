@@ -7,9 +7,7 @@ package sptv22library;
 
 import managers.HistoryManager;
 import managers.ReaderManager;
-import entity.History;
 import entity.User;
-import java.util.List;
 import java.util.Scanner;
 import managers.BookManager;
 import managers.DatabaseManager;
@@ -52,7 +50,7 @@ public class App {
         if("n".equals(word)){
             databaseManager.saveUser(readerManager.addReader());
         }
-        for(int n=0;n<3;n++){
+        for(int attempt=0;attempt<3;attempt++){
             System.out.print("Please enter your login: ");
             String login = scanner.nextLine();
             System.out.print("Please enter your password: ");

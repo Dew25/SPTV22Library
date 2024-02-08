@@ -97,13 +97,17 @@ public class DatabaseManager {
     }
 
     public void saveHistory(History history) {
-        em.getTransaction().begin();
-        if(history.getId() == null){
-            em.persist(history);
-        }else{
-            em.merge(history);
+        try {
+            em.getTransaction().begin();
+            if(history.getId() == null){
+                em.persist(history);
+            }else{
+                em.merge(history);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
         }
-        em.getTransaction().commit();
     }
 
     History getHistory(Long id) {
