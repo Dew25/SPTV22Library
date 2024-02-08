@@ -7,11 +7,14 @@ package sptv22library;
 
 import managers.HistoryManager;
 import managers.ReaderManager;
+import entity.History;
 import entity.User;
+import java.util.List;
 import java.util.Scanner;
 import managers.BookManager;
 import managers.DatabaseManager;
 import tools.InputProtection;
+import tools.PassEncrypt;
 
 /**
  *
@@ -50,12 +53,14 @@ public class App {
         if("n".equals(word)){
             databaseManager.saveUser(readerManager.addReader());
         }
-        for(int attempt=0;attempt<3;attempt++){
+        for(int n=0;n<3;n++){
             System.out.print("Please enter your login: ");
             String login = scanner.nextLine();
             System.out.print("Please enter your password: ");
             String password = scanner.nextLine();
-            App.user = databaseManager.authorization(login, password);
+            PassEncrypt pe = new PassEncrypt();
+            String encryptPassword = pe.getEncryptPassword(password, pe.getSalt());
+            App.user = databaseManager.authorization(login, encryptPassword);
             if(App.user != null){
                 break;
             }

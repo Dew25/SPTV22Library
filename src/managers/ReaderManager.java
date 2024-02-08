@@ -9,6 +9,7 @@ import entity.Reader;
 import entity.User;
 import java.util.List;
 import java.util.Scanner;
+import tools.PassEncrypt;
 
 /**
  *
@@ -35,7 +36,8 @@ public class ReaderManager {
         System.out.print("Login: ");
         user.setLogin(scanner.nextLine());
         System.out.print("Password: ");
-        user.setPassword(scanner.nextLine());
+        PassEncrypt pe = new PassEncrypt();
+        user.setPassword(pe.getEncryptPassword(scanner.nextLine(),pe.getSalt()));
         user.setReader(reader);
         System.out.println("New reader added!");
         return user;
