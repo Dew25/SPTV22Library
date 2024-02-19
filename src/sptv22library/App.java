@@ -21,6 +21,7 @@ import tools.PassEncrypt;
  * @author admin
  */
 public class App {
+    public static enum ROLES {ADMINISTRATOR, MANAGER, USER};
     public static User user;
     private final Scanner scanner; 
     //private List<Book> books;
@@ -81,16 +82,21 @@ public class App {
             System.out.println("6. Print list reading books");
             System.out.println("7. Return book");
             System.out.println("8. Book rating");
+            System.out.println("9. Admin pane");
             System.out.print("Enter task number: ");
-            int task = InputProtection.intInput(0,8); 
+            int task = InputProtection.intInput(0,9); 
             System.out.printf("You select task %d, for exit press \"0\", to continue press \"1\": ",task);
             int toContinue = InputProtection.intInput(0,1);
             if(toContinue == 0) continue;
             switch (task) {
                 case 0:
                     repeat = false;
-                    break;
+               break;
                 case 1:
+                    if(!App.user.getRoles().contains(App.ROLES.MANAGER.toString())){
+                        System.out.println("Net razreisenija");
+                        break;
+                    }
                     bookManager.addBook(databaseManager);
                     break;
                 case 2:
@@ -113,6 +119,13 @@ public class App {
                     break;
                 case 8:
                     historyManager.bookRating(databaseManager);
+                    break;
+                case 9:
+                    if(!App.user.getRoles().contains(App.ROLES.ADMINISTRATOR.toString())){
+                        System.out.println("Net razreisenija");
+                        break;
+                    }
+                    userManager.changeRole(databaseManager);
                     break;
                 default:
                     System.out.println("Select from list tasks!");

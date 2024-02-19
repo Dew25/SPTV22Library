@@ -9,6 +9,8 @@ import entity.Reader;
 import entity.User;
 import java.util.List;
 import java.util.Scanner;
+import sptv22library.App;
+import tools.InputProtection;
 import tools.PassEncrypt;
 
 /**
@@ -39,6 +41,7 @@ public class UserManager {
         PassEncrypt pe = new PassEncrypt();
         user.setPassword(pe.getEncryptPassword(scanner.nextLine().trim(),pe.getSalt()));
         user.setReader(reader);
+        user.getRoles().add(App.ROLES.USER.toString());
         System.out.println("New reader added!");
         return user;
     }
@@ -54,6 +57,61 @@ public class UserManager {
                     users.get(i).getLogin(),
                     users.get(i).getReader().getPhone()
             );
+        }
+    }
+
+    public void changeRole(DatabaseManager databaseManager) {
+        //Выводим список пользователей и выбираем пользователя
+        //Выводим список ролей и выбираем роль
+        //Выводим список действий и выбираем действие
+        printListUserss(databaseManager);
+        System.out.println("Выберите пользователя: ");
+        int idUser = InputProtection.intInput(1, null);
+        for (int i = 0; i < App.ROLES.values().length; i++) {
+            System.out.printf("%d %s%n", i+1, App.ROLES.values()[i].toString());
+        }
+        System.out.println("Выберите роль: ");
+        int numRole = InputProtection.intInput(1, 3);
+        System.out.println("Выберите действие: ");
+        System.out.println("1 - Добавить роль");
+        System.out.println("2 - Удалить роль");
+        int action = InputProtection.intInput(1, 2);
+        if(action == 1){
+            this.addRole(idUser, numRole,databaseManager);
+        }else if(action == 2){
+            this.removeRole(idUser, numRole,databaseManager);
+        }
+        
+    }
+
+    private void addRole(int idUser, int numRole,DatabaseManager databaseManager) {
+        User user = databaseManager.getUser((long)idUser);
+        String role = App.ROLES.values()[numRole-1].toString();
+        if(!user.getRoles().contains(role)){
+            user.getRoles().add(role);
+            databaseManager.saveUser(user);
+            System.out.println("Роль добавлена");
+            if(App.user.getId().equals(user.getId())){
+                App.user = user;
+            }
+        }else{
+            System.out.printf("Роль %s  уже есть у пользователя",role);
+        }
+        
+    }
+
+    private void removeRole(int idUser, int numRole,DatabaseManager databaseManager) {
+        User user = databaseManager.getUser((long)idUser);
+        String role = App.ROLES.values()[numRole-1].toString();
+        if(user.getRoles().contains(role)){
+            user.getRoles().remove(role);
+            databaseManager.saveUser(user);
+            if(App.user.getId().equals(user.getId())){
+                App.user = user;
+            }
+            System.out.println("Роль удалена");
+        }else{
+            System.out.printf("Роли %s  у пользователя нет",role);
         }
     }
 
