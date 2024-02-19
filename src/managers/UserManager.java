@@ -15,14 +15,14 @@ import tools.PassEncrypt;
  *
  * @author admin
  */
-public class ReaderManager {
+public class UserManager {
     private final Scanner scanner;
 
-    public ReaderManager(Scanner scanner) {
+    public UserManager(Scanner scanner) {
         this.scanner = scanner;
     }
     
-    public User addReader() {
+    public User addUser() {
         
         Reader reader = new Reader();
         System.out.println("----- Add reader -----");
@@ -37,7 +37,7 @@ public class ReaderManager {
         user.setLogin(scanner.nextLine());
         System.out.print("Password: ");
         PassEncrypt pe = new PassEncrypt();
-        user.setPassword(pe.getEncryptPassword(scanner.nextLine(),pe.getSalt()));
+        user.setPassword(pe.getEncryptPassword(scanner.nextLine().trim(),pe.getSalt()));
         user.setReader(reader);
         System.out.println("New reader added!");
         return user;

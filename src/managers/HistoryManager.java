@@ -28,11 +28,11 @@ public class HistoryManager {
 
     private final Scanner scanner;
     private final BookManager bookManager;
-    private final ReaderManager readerManager;
+    private final UserManager readerManager;
 
     public HistoryManager(
             Scanner scanner, 
-            ReaderManager readerManager, 
+            UserManager readerManager, 
             BookManager bookManager) {
         this.scanner = scanner;
         this.bookManager = bookManager;

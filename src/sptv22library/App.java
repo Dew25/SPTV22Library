@@ -6,7 +6,7 @@
 package sptv22library;
 
 import managers.HistoryManager;
-import managers.ReaderManager;
+import managers.UserManager;
 import entity.History;
 import entity.User;
 import java.util.List;
@@ -28,7 +28,7 @@ public class App {
     //private List<History> histories;
     
     private final BookManager bookManager;
-    private final ReaderManager readerManager;
+    private final UserManager userManager;
     private final HistoryManager historyManager;
     //private final SaveManager saveManager;
     private final DatabaseManager databaseManager;
@@ -41,8 +41,8 @@ public class App {
         //this.users = saveManager.loadUsers();
         //this.histories = saveManager.loadHistories();
         this.bookManager = new BookManager(scanner);
-        this.readerManager = new ReaderManager(scanner);
-        this.historyManager = new HistoryManager(scanner,readerManager,bookManager);
+        this.userManager = new UserManager(scanner);
+        this.historyManager = new HistoryManager(scanner,userManager,bookManager);
     }
     
     
@@ -51,13 +51,13 @@ public class App {
         System.out.println("If you have a login and password press y, otherwise press n");
         String word = scanner.nextLine();
         if("n".equals(word)){
-            databaseManager.saveUser(readerManager.addReader());
+            databaseManager.saveUser(userManager.addUser());
         }
         for(int n=0;n<3;n++){
             System.out.print("Please enter your login: ");
             String login = scanner.nextLine();
             System.out.print("Please enter your password: ");
-            String password = scanner.nextLine();
+            String password = scanner.nextLine().trim();
             PassEncrypt pe = new PassEncrypt();
             String encryptPassword = pe.getEncryptPassword(password, pe.getSalt());
             App.user = databaseManager.authorization(login, encryptPassword);
@@ -97,10 +97,10 @@ public class App {
                     bookManager.printListBooks(databaseManager);
                     break;
                 case 3:
-                    databaseManager.saveUser(readerManager.addReader());
+                    databaseManager.saveUser(userManager.addUser());
                     break;
                 case 4:
-                    readerManager.printListUserss(databaseManager);
+                    userManager.printListUserss(databaseManager);
                     break;
                 case 5:
                     historyManager.takeOutBook(databaseManager);
