@@ -19,9 +19,15 @@ import tools.PassEncrypt;
  */
 public class UserManager {
     private final Scanner scanner;
-
-    public UserManager(Scanner scanner) {
+    private final DatabaseManager databaseManager;
+    
+    public UserManager(Scanner scanner,DatabaseManager databaseManager) {
         this.scanner = scanner;
+        this.databaseManager = databaseManager;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
     
     public User addUser() {
@@ -46,12 +52,12 @@ public class UserManager {
         return user;
     }
 
-    public void printListUserss(DatabaseManager databaseManager) {
+    public void printListUsers() {
         System.out.println("----- List readers -----");
-        List<User> users = databaseManager.getListUsers();
+        List<User> users = getDatabaseManager().getListUsers();
         for (int i = 0; i < users.size(); i++) {
             System.out.printf("%d. %s %s. Login: %s (phone: %s)%n",
-                    i+1,
+                    users.get(i).getId(),
                     users.get(i).getReader().getFirstname(),
                     users.get(i).getReader().getLastname(),
                     users.get(i).getLogin(),
@@ -60,11 +66,11 @@ public class UserManager {
         }
     }
 
-    public void changeRole(DatabaseManager databaseManager) {
+    public void changeRole() {
         //Выводим список пользователей и выбираем пользователя
         //Выводим список ролей и выбираем роль
         //Выводим список действий и выбираем действие
-        printListUserss(databaseManager);
+        printListUsers();
         System.out.println("Выберите пользователя: ");
         int idUser = InputProtection.intInput(1, null);
         for (int i = 0; i < App.ROLES.values().length; i++) {
@@ -77,19 +83,19 @@ public class UserManager {
         System.out.println("2 - Удалить роль");
         int action = InputProtection.intInput(1, 2);
         if(action == 1){
-            this.addRole(idUser, numRole,databaseManager);
+            this.addRole(idUser, numRole);
         }else if(action == 2){
-            this.removeRole(idUser, numRole,databaseManager);
+            this.removeRole(idUser, numRole);
         }
         
     }
 
-    private void addRole(int idUser, int numRole,DatabaseManager databaseManager) {
-        User user = databaseManager.getUser((long)idUser);
+    private void addRole(int idUser, int numRole) {
+        User user = getDatabaseManager().getUser((long)idUser);
         String role = App.ROLES.values()[numRole-1].toString();
         if(!user.getRoles().contains(role)){
             user.getRoles().add(role);
-            databaseManager.saveUser(user);
+            getDatabaseManager().saveUser(user);
             System.out.println("Роль добавлена");
             if(App.user.getId().equals(user.getId())){
                 App.user = user;
@@ -100,12 +106,16 @@ public class UserManager {
         
     }
 
-    private void removeRole(int idUser, int numRole,DatabaseManager databaseManager) {
-        User user = databaseManager.getUser((long)idUser);
+    private void removeRole(int idUser, int numRole) {
+        User user = getDatabaseManager().getUser((long)idUser);
+        if(user.getLogin().equals("admin")){
+            System.out.println("Изменения невозможны");
+            return;
+        }
         String role = App.ROLES.values()[numRole-1].toString();
         if(user.getRoles().contains(role)){
             user.getRoles().remove(role);
-            databaseManager.saveUser(user);
+            getDatabaseManager().saveUser(user);
             if(App.user.getId().equals(user.getId())){
                 App.user = user;
             }
@@ -114,9 +124,4 @@ public class UserManager {
             System.out.printf("Роли %s  у пользователя нет",role);
         }
     }
-
-    
-
-    
-    
 }
